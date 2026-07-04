@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Attestation Récence SPL & TMG - DTO Belgique</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.15; max-width: 1050px; margin: 5px auto; padding: 15px; background-color: #f0f4f8; font-size: 0.9em; }
+        .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 10px; }
+        h2 { color: #0d47a1; border-bottom: 2px solid #0d47a1; padding-bottom: 5px; text-transform: uppercase; font-size: 1.1em; margin-top: 0; }
+        h3 { color: #1976d2; font-size: 0.85em; margin-top: 8px; border-left: 4px solid #1976d2; padding-left: 8px; background: #e3f2fd; padding: 3px 8px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+        .full-width { grid-column: span 3; }
+        label { display: block; margin: 3px 0 1px; font-weight: bold; font-size: 0.75em; color: #333; }
+        input { width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 0.8em; }
+        .aoc-input { background-color: #fff3e0; border: 1px solid #ffb74d; }
+        .section-box { border: 1px solid #e0e0e0; padding: 8px; border-radius: 5px; background: #fafafa; }
+        table { width: 100%; border-collapse: collapse; margin-top: 8px; background: white; font-size: 0.8em; }
+        th, td { border: 1px solid #dee2e6; padding: 5px; text-align: left; }
+        th { background-color: #0d47a1; color: white; text-transform: uppercase; font-size: 0.85em; }
+        .ref-easa { font-size: 0.8em; color: #666; font-style: italic; display: block; margin-top: 2px; }
+        .status-badge { padding: 2px 6px; border-radius: 10px; font-size: 0.85em; font-weight: bold; }
+        .valid { background: #d4edda; color: #155724; }
+        .warning { background: #fff3cd; color: #856404; }
+        .expired { background: #f8d7da; color: #721c24; }
+        .btn-print { background: #2e7d32; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px; width: 100%; font-size: 1em; }
+        #raw-data-report { margin: 8px 0; padding: 8px; border: 1px dashed #999; background: #fdfdfd; font-size: 0.75em; }
+        #raw-data-report ul { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+        @media print { .no-print { display: none !important; } body { background: white; margin: 0; padding: 0; font-size: 0.85em; } .card { box-shadow: none; border: 1px solid #eee; margin-bottom: 5px; padding: 10px; } table { font-size: 0.85em; } }
+    </style>
+</head>
+<body>
+
+    <div class="card no-print">
+        <h2>Saisie des Données licence SPL</h2>
+        <div class="grid">
+            <div class="full-width">
+                <label>Nom et Prénom du Pilote :</label>
+                <input type="text" id="piloteName" placeholder="Identité complète..." oninput="calculer()">
+            </div>
+            <div class="full-width" style="background:#fff9c4; padding:8px; border-radius:5px;">
+                <label><strong>Certificat Médical :</strong> Date d'expiration (MED.A.030)</label>
+                <input type="date" id="dateMed" onchange="calculer()">
+            </div>
+
+            <!-- SPL -->
+            <div class="section-box">
+                <h3>SPL sailplane (SFCL.160)</h3>
+                <label>5h PIC (24m) :</label><input type="date" id="date5h" onchange="calculer()">
+                <label>15 lanc. (24m) :</label><input type="date" id="date15v" onchange="calculer()">
+                <label>2 vols FI (24m) :</label><input type="date" id="dateFI_SPL" onchange="calculer()">
+                <label style="color:#e65100;">Check FE SPL (24m) :</label><input type="date" id="dateCheckSPL" class="aoc-input" onchange="calculer()">
+                <h3>Modes de lancement (SFCL.155)</h3>
+                <label>REMORQUAGE (5v/24m) :</label><input type="date" id="dateRem" onchange="calculer()">
+                <label>TREUIL (5v/24m) :</label><input type="date" id="dateTr" onchange="calculer()">
+                <label>SELF-LAUNCH (5v/24m) :</label><input type="date" id="dateSL" onchange="calculer()">
+                <h3>Emport passager sailplane (SFCL.160)</h3>
+                <label>3 vols PIC (3 PIC / 90j) :</label><input type="date" id="datePax" onchange="calculer()">
+            </div>
+
+            <!-- TMG -->
+            <div class="section-box">
+                <h3>SPL TMG (SFCL.160b)</h3>
+                <label>12h tot. TMG (24m) :</label><input type="date" id="date12hTMG" onchange="calculer()">
+                <label>6h PIC TMG (24m) :</label><input type="date" id="date6hPIC" onchange="calculer()">
+                <label>12 décollages TMG (24m) :</label><input type="date" id="date12dec" onchange="calculer()">
+                <label>1h avec FI TMG (24m) :</label><input type="date" id="dateFI_TMG" onchange="calculer()">
+                <label style="color:#e65100;">Check FE TMG (24m) :</label><input type="date" id="dateCheckTMG" class="aoc-input" onchange="calculer()">
+                <h3>Remorquage sur TMG (SFCL.205)</h3>
+                <label style="color:#01579b;">5 remorquages sur TMG (24m) :</label>
+                <input type="date" id="dateTowTMG" onchange="calculer()" style="border: 1px solid #01579b;">
+            </div>
+
+            <!-- FI -->
+            <div class="section-box">
+                <h3>Instructeur FI(S) (SFCL.360)</h3>
+                <label>Séminaire (36m) :</label><input type="date" id="dateRef" onchange="calculer()">
+                <label>30h Instr. (36m) :</label><input type="date" id="dateFI_30h" onchange="calculer()">
+                <label>60v Instr. (36m) :</label><input type="date" id="dateFI_60v" onchange="calculer()">
+                <label style="color:#e65100;">AoC / Éval. Comp. (36m) :</label><input type="date" id="dateAoC36" class="aoc-input" onchange="calculer()">
+                <label>Vol Démo FI/FI (9 ans) :</label><input type="date" id="dateDemo" onchange="calculer()">
+                <label style="color:#e65100;">AoC / Éval. Comp. (9 ans) :</label><input type="date" id="dateAoC9y" class="aoc-input" onchange="calculer()">
+            </div>
+        </div>
+        <button class="btn-print" onclick="window.print()">🖨️ Imprimer l'Attestation </button>
+    </div>
+
+    <div class="card">
+        <h2 style="text-align:center;">Attestation de Récence et Validité (Part-SFCL)</h2>
+        <h3 id="displayPilote" style="text-align:center; border:none; background:transparent; font-size:1.3em;">Pilote : (Non renseigné)</h3>
+        <div id="raw-data-report"><strong>Données Sources :</strong> <ul id="list-raw-dates"></ul></div>
+        <table>
+            <thead><tr><th>Qualification / Privilege / Mode</th><th>Échéance</th><th>Statut de Validité</th></tr></thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+        <div style="margin-top:10px; font-size: 0.7em; color: #444; border-top: 1px solid #ccc; padding-top:5px;">
+            <p><strong>Note :</strong> Validités 24/36m expirent au dernier jour du mois. 90j/9ans date à date. Le maintien remorquage TMG exige 5 remorquages en 24 mois. <em>Seul le carnet de vol fait foi.</em></p>
+            <p>Calcul effectué le : <span id="currentDate"></span></p>
+        </div>
+    </div>
+
+    <script>
+        function getEndOfMonth(dateStr, months) {
+            if(!dateStr) return null;
+            let d = new Date(dateStr); d.setMonth(d.getMonth() + (months + 1), 0); return d;
+        }
+        function addYears(dateStr, years) {
+            if(!dateStr) return null;
+            let d = new Date(dateStr); d.setFullYear(d.getFullYear() + years); return d;
+        }
+        function add90Days(dateStr) {
+            if(!dateStr) return null;
+            let d = new Date(dateStr); d.setDate(d.getDate() + 90); return d;
+        }
+        function formatDate(date) { return date ? date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : "-"; }
+        function addRow(label, refEasa, expiryDate) {
+            if(!expiryDate) return `<tr><td>${label}<span class="ref-easa">${refEasa}</span></td><td>-</td><td><span class="status-badge">Incomplet</span></td></tr>`;
+            const today = new Date();
+            let statusClass = (expiryDate < today) ? "expired" : (Math.ceil((expiryDate - today) / 86400000) < 30 ? "warning" : "valid");
+            let statusText = (expiryDate < today) ? "EXPIRÉ" : (statusClass === "warning" ? "URGENT" : "VALIDE");
+            return `<tr><td>${label}<span class="ref-easa">${refEasa}</span></td><td>${formatDate(expiryDate)}</td><td><span class="status-badge ${statusClass}">${statusText}</span></td></tr>`;
+        }
+
+        function calculer() {
+            document.getElementById('displayPilote').innerText = "Pilote : " + (document.getElementById('piloteName').value || "(Non renseigné)");
+            document.getElementById('currentDate').innerText = formatDate(new Date());
+            const body = document.getElementById('tableBody'); body.innerHTML = "";
+            const rawList = document.getElementById('list-raw-dates'); rawList.innerHTML = "";
+            document.querySelectorAll('.no-print input').forEach(input => {
+                if(input.value && input.id !== "piloteName") {
+                    let label = document.querySelector(`label[for="${input.id}"]`) || input.previousElementSibling;
+                    let li = document.createElement("li");
+                    li.innerHTML = `<strong>${label.innerText.split('(')} :</strong> ${input.type==='date'?formatDate(new Date(input.value)):input.value}`;
+                    rawList.appendChild(li);
+                }
+            });
+
+            body.innerHTML += addRow("Aptitude Médicale", "Part-MED / MED.A.030", document.getElementById('dateMed').value ? new Date(document.getElementById('dateMed').value) : null);
+
+            let d5h = document.getElementById('date5h').value, d15v = document.getElementById('date15v').value, dFI_S = document.getElementById('dateFI_SPL').value, dChSPL = document.getElementById('dateCheckSPL').value;
+            let expSPL = (d5h && d15v && dFI_S) ? getEndOfMonth(new Date(Math.min(new Date(d5h), new Date(d15v), new Date(dFI_S))), 24) : null;
+            if(dChSPL) { let eFE = getEndOfMonth(dChSPL, 24); expSPL = (!expSPL || eFE > expSPL) ? eFE : expSPL; }
+            body.innerHTML += addRow("Licence SPL (Expérience Générale)", "SFCL.160 (a)", expSPL);
+
+            let f30 = document.getElementById('dateFI_30h').value, f60 = document.getElementById('dateFI_60v').value, fRef = document.getElementById('dateRef').value, fAoC36 = document.getElementById('dateAoC36').value, fDemo = document.getElementById('dateDemo').value, fAoC9y = document.getElementById('dateAoC9y').value;
+            let finalFI = null;
+            if(fRef && (f30 || f60 || fAoC36)) {
+                let dExpOU = (f30 && f60) ? new Date(Math.max(new Date(f30), new Date(f60))) : new Date(f30 || f60 || fAoC36);
+                if(fAoC36 && new Date(fAoC36) > dExpOU) dExpOU = new Date(fAoC36);
+                let exp36m = getEndOfMonth(new Date(Math.min(dExpOU, new Date(fRef))), 36);
+                if(fDemo || fAoC9y) {
+                    let dLast9 = (fDemo && fAoC9y) ? new Date(Math.max(new Date(fDemo), new Date(fAoC9y))) : new Date(fDemo || fAoC9y);
+                    finalFI = new Date(Math.min(exp36m, addYears(dLast9, 9)));
+                }
+            }
+            body.innerHTML += addRow("Qualification Instructeur FI(S)", "SFCL.360 & 345", finalFI);
+
+            let t12 = document.getElementById('date12hTMG').value, t6 = document.getElementById('date6hPIC').value, t12d = document.getElementById('date12dec').value, tfi = document.getElementById('dateFI_TMG').value, dChTMG = document.getElementById('dateCheckTMG').value;
+            let expTMG = (t12 && t6 && t12d && tfi) ? getEndOfMonth(new Date(Math.min(new Date(t12), new Date(t6), new Date(t12d), new Date(tfi))), 24) : null;
+            if(dChTMG) { let eFET = getEndOfMonth(dChTMG, 24); expTMG = (!expTMG || eFET > expTMG) ? eFET : expTMG; }
+            if(t12 || dChTMG) body.innerHTML += addRow("Extension TMG", "SFCL.160 (b)", expTMG);
+
+            let dTowT = document.getElementById('dateTowTMG').value;
+            if(dTowT) body.innerHTML += addRow("Récence Remorquage sur TMG", "SFCL.205 (f)", getEndOfMonth(dTowT, 24));
+
+            if(document.getElementById('dateRem').value) body.innerHTML += addRow("Mode : REMORQUAGE", "SFCL.155 (c)", getEndOfMonth(document.getElementById('dateRem').value, 24));
+            if(document.getElementById('dateTr').value) body.innerHTML += addRow("Mode : TREUIL", "SFCL.155 (c)", getEndOfMonth(document.getElementById('dateTr').value, 24));
+            if(document.getElementById('dateSL').value) body.innerHTML += addRow("Mode : SELF-LAUNCH", "SFCL.155 (c)", getEndOfMonth(document.getElementById('dateSL').value, 24));
+            if(document.getElementById('datePax').value) body.innerHTML += addRow("Emport Passagers", "SFCL.160 (e)", add90Days(document.getElementById('datePax').value));
+        }
+    </script>
+</body>
+</html>
